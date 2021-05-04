@@ -57,7 +57,7 @@ func (s *TaskExecutor) Exec() {
 			}
 			task.Status = status
 			task.UpdateTime = time.Now().Unix()
-			task.CostTime = time.Now().Unix() - task.ExecuteTime
+			task.CostTime = time.Now().UnixNano()/1e6 - task.ExecuteTime*1000
 			task.FinishTime = time.Now().Unix()
 			_ = db.ExportHandler.Save(&task, task.GetTableName())
 			_ = db.ExportHandler.Save(taskLog, taskLog.GetTableName())
@@ -134,4 +134,6 @@ func (s *TaskExecutor) Exec() {
 	if err = db.ExportHandler.Save(&taskDetail, taskDetail.GetTableName()); err != nil {
 		return
 	}
+	s.log("execute done.")
+	return
 }
